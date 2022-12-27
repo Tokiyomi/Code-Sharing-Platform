@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create</title>
+</head>
+<body>
+<script>
+    function send() {
+    let object = {
+        "code": document.getElementById("code_snippet").value
+    };
+
+    let json = JSON.stringify(object);
+
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", '/api/code/new', false)
+    xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+    xhr.send(json);
+
+    if (xhr.status == 200) {
+      alert("Success!");
+    }
+}
+</script>
+<span>Datetime</span>
+<form action="http://localhost:8889/api/code" method="post">
+    <textarea name="input-text" style="width: 600px; height: 100px; border-style: dotted" placeholder="// Write your code here"><pre id="code_snippet">{}</pre></textarea>
+    <br>
+    <button type="submit">Submit</button>
+</form>
+</body>
+</html>
