@@ -118,6 +118,16 @@ public class Code {
     @Column
     private boolean is_secret;
 
+    @JsonIgnore
+    @Column
+    private int modif_time;
+    @JsonIgnore
+    @Column
+    private boolean time_restricted;
+    @JsonIgnore
+    @Column
+    private boolean views_restricted;
+
     public Code(String code, int time, int views) {
         System.out.println("non-empty constructor call --------------");
         this.code = code;
@@ -132,6 +142,22 @@ public class Code {
         setLoad_date_str();
         this.code_html = String.format(template, this.getLoad_date_str(), this.getCode());
         this.new_code_html = new_template;
+    }
+
+    public boolean isTime_restricted() {
+        return time_restricted;
+    }
+
+    public void setTime_restricted(boolean time_restricted) {
+        this.time_restricted = time_restricted;
+    }
+
+    public boolean isViews_restricted() {
+        return views_restricted;
+    }
+
+    public void setViews_restricted(boolean views_restricted) {
+        this.views_restricted = views_restricted;
     }
 
     public String getCode() {
@@ -220,5 +246,13 @@ public class Code {
 
     public void setIs_secret(boolean is_secret) {
         this.is_secret = is_secret;
+    }
+
+    public int getModif_time() {
+        return modif_time;
+    }
+
+    public void setModif_time(int modif_time) {
+        this.modif_time = modif_time;
     }
 }

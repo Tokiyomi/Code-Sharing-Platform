@@ -10,8 +10,10 @@
 
     let object = {
         "code": document.getElementById("code_snippet").value,
-        "time": document.getElementById("time_restriction").value == "0" ? "-9999" : document.getElementById("time_restriction").value,
-        "views": document.getElementById("views_restriction").value == "0" ? "-9999" : document.getElementById("views_restriction").value
+        "time": document.getElementById("time_restriction").value, // == "0" ? "-9999" : document.getElementById("time_restriction").value,
+        "views": document.getElementById("views_restriction").value, // == "0" ? "-9999" : document.getElementById("views_restriction").value
+        //"time_restricted": document.getElementById("time_restriction").value == "0" ? false : true,
+        //"views_restricted": document.getElementById("views_restriction").value == "0" ? false : true
     };
 
 
@@ -36,7 +38,6 @@
 <br>
 <p>Time restriction: </p><input id="time_restriction" type="text" value="0" >
 <br>
-
 <p>Views restriction: </p><input id="views_restriction" type="text" value="0" >
 <br>
 <br>

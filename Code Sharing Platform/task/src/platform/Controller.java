@@ -48,6 +48,7 @@ public class Controller {
         model.addObject("code", map.get("code"));
         model.addObject("load_date_str", map.get("date"));
         model.addObject("time", map.get("time"));
+        //model.addObject("current_time", map.get("current_time"));
         model.addObject("views", map.get("views"));
         model.setStatus(HttpStatus.OK);
         return model;
@@ -92,21 +93,20 @@ public class Controller {
         if (code != null) {
             if (code.isIs_secret()) {
 
-                long passed_time = 0;
-                if (code.getTime() != -9999) {
-                    passed_time = code.computeRemainingTime(code.getLoad_date(), LocalDateTime.now());
+                if (code.isTime_restricted()) {
+                    long passed_time = code.computeRemainingTime(code.getLoad_date(), LocalDateTime.now());
+                    code.setModif_time(code.getTime() - (int) passed_time);
                 }
 
-                if ((code.getTime() - passed_time <= 0 && code.getTime() != -9999) || (code.getViews() <= 0) && code.getViews() != -9999) {
-                    service.deleteById(N);
-                    return new ResponseEntity<>(String.format("ID %s not found", N.toString()), headers, HttpStatus.NOT_FOUND);
-                }
-
-                if (code.getViews() != -9999) {
+                if (code.isViews_restricted()) {
                     int remaining_views = code.getViews() - 1;
                     code.setViews(remaining_views);
                 }
 
+                if ((code.getModif_time() <= 0 && code.isTime_restricted()) || (code.getViews() < 0) && code.isViews_restricted()) {
+                    service.deleteById(N);
+                    return new ResponseEntity<>(String.format("ID %s not found", N.toString()), headers, HttpStatus.NOT_FOUND);
+                }
                 service.save(code);
             }
 
@@ -115,7 +115,8 @@ public class Controller {
             map.put("code", code.getCode());
             //map.put("load date", code.getLoad_date());
             map.put("date", code.getLoad_date_str());
-            map.put("time", code.getTime());
+            //map.put("time", code.getTime());
+            map.put("time", code.getModif_time());
             map.put("views", code.getViews());
             //map.put("secret", code.isIs_secret());
 
@@ -179,12 +180,18 @@ public class Controller {
         //new_code.setId(token);
         map.put("id",token);
 
-        if (new_code.getViews()>0 || new_code.getTime()>0) {
+        if (new_code.getTime()>0 || new_code.getViews()>0) {
             new_code.setIs_secret(true);
+            if (new_code.getTime()>0) {
+                new_code.setTime_restricted(true);
+            }
+            if (new_code.getViews()>0 ) {
+                new_code.setViews_restricted(true);
+            }
         } else {
             new_code.setIs_secret(false);
-            new_code.setViews(0);
-            new_code.setTime(0);
+            //new_code.setViews(0);
+            //new_code.setTime(0);
         }
 
         service.save(new_code);

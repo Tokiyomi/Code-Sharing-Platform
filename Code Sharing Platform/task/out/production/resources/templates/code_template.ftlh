@@ -11,8 +11,10 @@
 <div>
 <span id="load_date" style="color: green">${load_date_str}</span>
 <br>
-<span id="views_restriction">${views} more allowed</span>
-<br>
+
+    <span id="views_restriction">${views} more allowed</span>
+    <br>
+
 <span id="time_restriction">${time} remaining seconds</span>
 <br>
 <pre id="code_snippet" style=" border-style: solid; border-width: 1px;width: 600px"><code>${code}</code></pre>
