@@ -63,7 +63,7 @@ public class Controller {
             Code map = (Code) response.getBody();
             model.addObject("code", map.getCode());
             model.addObject("load_date_str", map.getLoad_date_str());
-            model.addObject("time", map.getTime());
+            model.addObject("time", map.getModif_time());
             model.addObject("views", map.getViews());
             /*if (map.isViews_restricted()) {
                 int remaining_views = map.getViews() - 1;
@@ -119,7 +119,7 @@ public class Controller {
 
                 if (code.isTime_restricted()) {
                     long passed_time = code.computeRemainingTime(code.getLoad_date(), LocalDateTime.now());
-                    code.setTime(code.getOriginal_time() - (int) passed_time);
+                    code.setModif_time(code.getOriginal_time() - (int) passed_time);
                 }
 
                 if (code.isViews_restricted()) {
@@ -127,7 +127,7 @@ public class Controller {
                     code.setViews(remaining_views);
                 }
 
-                if ((code.getTime() < 0 && code.isTime_restricted()) || (code.getViews() < 0) && code.isViews_restricted()) {
+                if ((code.getModif_time() < 0 && code.isTime_restricted()) || (code.getViews() < 0) && code.isViews_restricted()) {
                     service.deleteById(N);
                     return new ResponseEntity<>(String.format("ID %s not found", N.toString()), headers, HttpStatus.NOT_FOUND);
                 }
@@ -208,6 +208,7 @@ public class Controller {
         Map<String, UUID> map = new HashMap<>();
         UUID token = UUID.randomUUID();
         new_code.setId(token.toString());
+        new_code.setOriginal_time(new_code.getModif_time());
         //long id = service.count()+1;
         //new_code.setId(token);
         map.put("id",token);

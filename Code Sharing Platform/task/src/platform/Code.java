@@ -44,9 +44,8 @@ public class Code {
     @JsonProperty(value="date")
     private String load_date_str;
 
-    //@JsonIgnore
+    @JsonIgnore
     @Column
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private int original_time;
 
     @Column
@@ -121,9 +120,8 @@ public class Code {
     private boolean is_secret;
 
     @Column
-    //@JsonProperty(value = "time")
-    //@JsonIgnore
-    private int time;
+    @JsonProperty(value = "time")
+    private int modif_time;
     @JsonIgnore
     @Column
     private boolean time_restricted;
@@ -131,12 +129,12 @@ public class Code {
     @Column
     private boolean views_restricted;
 
-    public Code(String code, int time, int views) {
+    /*public Code(String code, int time, int views) {
         System.out.println("non-empty constructor call --------------");
         this.code = code;
         this.time = time;
         this.views = views;
-    }
+    }*/
 
     public Code() {
         System.out.println("empty constructor call --------------");
@@ -212,12 +210,12 @@ public class Code {
         this.id = id;
     }
 
-    public int getTime() {
-        return time;
+    public int getModif_time() {
+        return modif_time;
     }
 
-    public void setTime(int time) {
-        this.time = time;
+    public void setModif_time(int modif_time) {
+        this.modif_time = modif_time;
     }
 
     public int getViews() {
@@ -257,6 +255,7 @@ public class Code {
     }
 
     //@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    //@JsonIgnore
     public void setOriginal_time(int original_time) {
         this.original_time = original_time;
     }
