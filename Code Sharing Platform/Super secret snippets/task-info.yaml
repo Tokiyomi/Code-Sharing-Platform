@@ -1014,6 +1014,38 @@ files:
 - name: src/resources/templates/new_template.ftlh
   visible: true
   learner_created: true
+- name: src/resources/templates/error_template.ftlh
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/learn/step/11031#comment
-status: Unchecked
+status: Failed
+feedback:
+  message: |2
+
+    FAILURE: Build failed with an exception.
+
+    * What went wrong:
+    Could not resolve all files for configuration &#39;classpath&#39;.
+    &gt; Could not resolve com.github.hyperskill:hs-gradle-plugin:release-SNAPSHOT.
+      Required by:
+          unspecified:unspecified:unspecified
+       &gt; Could not resolve com.github.hyperskill:hs-gradle-plugin:release-SNAPSHOT.
+          &gt; Unable to load Maven meta-data from https://packages.jetbrains.team/maven/p/academy/hyperskill-hspc/com/github/hyperskill/hs-gradle-plugin/release-SNAPSHOT/maven-metadata.xml.
+             &gt; Could not HEAD &#39;https://packages.jetbrains.team/maven/p/academy/hyperskill-hspc/com/github/hyperskill/hs-gradle-plugin/release-SNAPSHOT/maven-metadata.xml&#39;.
+                &gt; The server may not support the client&#39;s requested TLS protocol versions: (TLSv1.2, TLSv1.3). You may need to configure the client to allow other protocols to be used. See: https://docs.gradle.org/7.3.3/userguide/build_environment.html#gradle_system_properties
+                   &gt; PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
+       &gt; Could not resolve com.github.hyperskill:hs-gradle-plugin:release-SNAPSHOT.
+          &gt; Unable to load Maven meta-data from https://jitpack.io/com/github/hyperskill/hs-gradle-plugin/release-SNAPSHOT/maven-metadata.xml.
+             &gt; Could not HEAD &#39;https://jitpack.io/com/github/hyperskill/hs-gradle-plugin/release-SNAPSHOT/maven-metadata.xml&#39;.
+                &gt; Can&#39;t assign requested address
+
+    * Try:
+    &gt; Run with --stacktrace option to get the stack trace.
+    &gt; Run with --info or --debug option to get more log output.
+    &gt; Run with --scan to get full insights.
+
+    * Get more help at https://help.gradle.org
+
+    BUILD FAILED in 4s
+  time: "Wed, 28 Dec 2022 18:19:15 UTC"
 record: -1

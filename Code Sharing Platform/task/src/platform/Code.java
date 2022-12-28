@@ -44,8 +44,10 @@ public class Code {
     @JsonProperty(value="date")
     private String load_date_str;
 
+    //@JsonIgnore
     @Column
-    private int time;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private int original_time;
 
     @Column
     private int views;
@@ -118,9 +120,10 @@ public class Code {
     @Column
     private boolean is_secret;
 
-    @JsonIgnore
     @Column
-    private int modif_time;
+    //@JsonProperty(value = "time")
+    //@JsonIgnore
+    private int time;
     @JsonIgnore
     @Column
     private boolean time_restricted;
@@ -248,11 +251,13 @@ public class Code {
         this.is_secret = is_secret;
     }
 
-    public int getModif_time() {
-        return modif_time;
+    //@JsonIgnore
+    public int getOriginal_time() {
+        return original_time;
     }
 
-    public void setModif_time(int modif_time) {
-        this.modif_time = modif_time;
+    //@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    public void setOriginal_time(int original_time) {
+        this.original_time = original_time;
     }
 }

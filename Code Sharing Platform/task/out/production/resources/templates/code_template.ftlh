@@ -11,12 +11,14 @@
 <div>
 <span id="load_date" style="color: green">${load_date_str}</span>
 <br>
-
-    <span id="views_restriction">${views} more allowed</span>
-    <br>
-
-<span id="time_restriction">${time} remaining seconds</span>
-<br>
+<#if (views_restricted == true)>
+ <span id="views_restriction"><u>${views}</u> more views allowed!</span>
+ <br>
+</#if>
+<#if (time_restricted == true)>
+ <span id="time_restriction">The code will be available for <u>${time}</u> seconds</span>
+ <br>
+</#if>
 <pre id="code_snippet" style=" border-style: solid; border-width: 1px;width: 600px"><code>${code}</code></pre>
 <!-- padding: 10px; background-color: lightgray; -->
 </div>

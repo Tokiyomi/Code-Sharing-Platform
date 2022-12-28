@@ -1,5 +1,7 @@
 package platform;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpHeaders;
@@ -43,15 +45,37 @@ public class Controller {
         //model.addObject("code", code.getCode());
         //System.out.println(map);
         //System.out.println(map.get("date"));
-        ModelAndView model = new ModelAndView("code_template");
-        Map<String, Object> map = (Map<String, Object>) getApiCodeByID(N).getBody();
-        model.addObject("code", map.get("code"));
-        model.addObject("load_date_str", map.get("date"));
-        model.addObject("time", map.get("time"));
-        //model.addObject("current_time", map.get("current_time"));
-        model.addObject("views", map.get("views"));
-        model.setStatus(HttpStatus.OK);
-        return model;
+        var response = getApiCodeByID(N);
+        if (response.getStatusCode()==HttpStatus.NOT_FOUND) {
+            //System.out.println("OUT");
+            ModelAndView model = new ModelAndView("error_template");
+            model.setStatus(HttpStatus.NOT_FOUND);
+            return model;
+        } else {
+            //System.out.println("normal");
+            ModelAndView model = new ModelAndView("code_template");
+            /*Map<String, Object> map = (Map<String, Object>) getApiCodeByID(N).getBody();
+            model.addObject("code", map.get("code"));
+            model.addObject("load_date_str", map.get("date"));
+            model.addObject("time", map.get("time"));
+            model.addObject("views", map.get("views"));*/
+
+            Code map = (Code) response.getBody();
+            model.addObject("code", map.getCode());
+            model.addObject("load_date_str", map.getLoad_date_str());
+            model.addObject("time", map.getTime());
+            model.addObject("views", map.getViews());
+            /*if (map.isViews_restricted()) {
+                int remaining_views = map.getViews() - 1;
+                map.setViews(remaining_views);
+            }*/
+            model.addObject("views_restricted", map.isViews_restricted());
+            model.addObject("time_restricted", map.isTime_restricted());
+
+            model.setStatus(HttpStatus.OK);
+
+            return model;
+        }
     }
 
     @GetMapping(path="/code/latest", produces = "text/html")
@@ -95,7 +119,7 @@ public class Controller {
 
                 if (code.isTime_restricted()) {
                     long passed_time = code.computeRemainingTime(code.getLoad_date(), LocalDateTime.now());
-                    code.setModif_time(code.getTime() - (int) passed_time);
+                    code.setTime(code.getOriginal_time() - (int) passed_time);
                 }
 
                 if (code.isViews_restricted()) {
@@ -103,10 +127,16 @@ public class Controller {
                     code.setViews(remaining_views);
                 }
 
-                if ((code.getModif_time() <= 0 && code.isTime_restricted()) || (code.getViews() < 0) && code.isViews_restricted()) {
+                if ((code.getTime() < 0 && code.isTime_restricted()) || (code.getViews() < 0) && code.isViews_restricted()) {
                     service.deleteById(N);
                     return new ResponseEntity<>(String.format("ID %s not found", N.toString()), headers, HttpStatus.NOT_FOUND);
                 }
+
+                /*if (code.isViews_restricted()) {
+                    int remaining_views = code.getViews() - 1;
+                    code.setViews(remaining_views);
+                }*/
+
                 service.save(code);
             }
 
@@ -116,11 +146,13 @@ public class Controller {
             //map.put("load date", code.getLoad_date());
             map.put("date", code.getLoad_date_str());
             //map.put("time", code.getTime());
-            map.put("time", code.getModif_time());
+            map.put("time", code.getOriginal_time());
             map.put("views", code.getViews());
+            //map.put("views_restricted", code.isViews_restricted());
+            //map.put("time_restricted", code.isTime_restricted());
             //map.put("secret", code.isIs_secret());
 
-            return new ResponseEntity<>(map, headers, HttpStatus.OK);
+            return new ResponseEntity<>(code, headers, HttpStatus.OK);
         }
 
         return new ResponseEntity<>(String.format("ID %s not found", N.toString()), headers, HttpStatus.NOT_FOUND);
@@ -180,18 +212,17 @@ public class Controller {
         //new_code.setId(token);
         map.put("id",token);
 
-        if (new_code.getTime()>0 || new_code.getViews()>0) {
+        if (new_code.getOriginal_time()>0 || new_code.getViews()>0) {
             new_code.setIs_secret(true);
-            if (new_code.getTime()>0) {
+            if (new_code.getOriginal_time()>0) {
                 new_code.setTime_restricted(true);
             }
             if (new_code.getViews()>0 ) {
                 new_code.setViews_restricted(true);
+                //new_code.setViews(new_code.getViews()-1);
             }
         } else {
             new_code.setIs_secret(false);
-            //new_code.setViews(0);
-            //new_code.setTime(0);
         }
 
         service.save(new_code);
