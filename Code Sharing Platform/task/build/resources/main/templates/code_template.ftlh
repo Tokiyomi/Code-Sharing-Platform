@@ -11,11 +11,11 @@
 <div>
 <span id="load_date" style="color: green">${load_date_str}</span>
 <br>
-<#if (views>0)>
- <span id="views_restriction"><u>${views}</u> more views allowed</span>
+<#if (views_restricted == true)>
+ <span id="views_restriction"><u>${views}</u> more views allowed!</span>
  <br>
 </#if>
-<#if (time>0)>
+<#if (time_restricted == true)>
  <span id="time_restriction">The code will be available for <u>${time}</u> seconds</span>
  <br>
 </#if>
